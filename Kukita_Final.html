@@ -1,0 +1,1133 @@
+<html data-type="html" data-identifier="4a778d05-21ed-4ad9-a6eb-538ba5d43a50" data-title="Kukita: La Gran Fuga Callejera" data-version="3" width="800" height="600"><head>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #090d16;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        #game-wrapper {
+            position: relative;
+            width: 800px;
+            height: 520px;
+            background: #020617;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            border: 3px solid #334155;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        #ui-bar {
+            position: absolute;
+            top: 12px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .stat-badge {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(8px);
+            border: 2px solid #475569;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #e2e8f0;
+        }
+        #progress-container {
+            flex: 1;
+            max-width: 280px;
+            margin: 0 12px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 2px solid #475569;
+            border-radius: 16px;
+            padding: 4px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        #progress-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #38bdf8;
+            display: flex;
+            justify-content: space-between;
+        }
+        #progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: #1e293b;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        #progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ec4899, #38bdf8);
+            transition: width 0.1s linear;
+        }
+        #overlay-screen {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.94);
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            text-align: center;
+            padding: 24px;
+        }
+        #game-title {
+            font-size: 34px;
+            color: #f59e0b;
+            text-shadow: 0 4px 12px rgba(245, 158, 11, 0.5);
+            margin-bottom: 8px;
+            font-weight: 900;
+        }
+        #game-subtitle {
+            font-size: 15px;
+            color: #cbd5e1;
+            max-width: 580px;
+            margin-bottom: 16px;
+            line-height: 1.45;
+        }
+        #game-instructions {
+            font-size: 13px;
+            color: #e2e8f0;
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px dashed #64748b;
+            border-radius: 12px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            line-height: 1.5;
+        }
+        .btn-action {
+            background: #f59e0b;
+            color: #0f172a;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 900;
+            padding: 14px 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45);
+        }
+        .btn-action:hover {
+            transform: scale(1.06);
+            background: #fbbf24;
+        }
+        #touch-controls {
+            display: flex;
+            justify-content: space-between;
+            width: 800px;
+            padding: 10px 20px;
+            gap: 12px;
+        }
+        .touch-group {
+            display: flex;
+            gap: 10px;
+        }
+        .ctrl-btn {
+            background: #334155;
+            border: 2px solid #64748b;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .ctrl-btn:active {
+            background: #475569;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-wrapper">
+        <canvas id="gameCanvas" width="800" height="520"></canvas>
+
+        <div id="ui-bar">
+            <div class="stat-badge">
+                <span>💩 Puntos:</span>
+                <span id="score-val" style="color: #fbbf24; font-size: 18px;">0</span>
+            </div>
+
+            <div id="progress-container">
+                <div id="progress-label">
+                    <span>🏃 Fuga de Lucía</span>
+                    <span id="dist-val">0%</span>
+                    <span>👭 Marcia y Mechi</span>
+                </div>
+                <div id="progress-bar-bg">
+                    <div id="progress-bar-fill"></div>
+                </div>
+            </div>
+
+            <div class="stat-badge">
+                <span>Vidas:</span>
+                <span id="lives-val" style="color: #f87171; font-size: 16px;">❤️❤️❤️</span>
+            </div>
+        </div>
+
+        <div id="overlay-screen">
+            <h1 id="game-title">🐕 KUKITA: LA GRAN FUGA</h1>
+            <p id="game-subtitle">¡Kukita se escapó! Lucía (rubia de remera violeta "VLLA") corre detrás para atraparla, y en la calle sus militantes intentarán frenarte. ¡Llega hasta donde están Marcia y Mechi!</p>
+            <div id="game-instructions">
+                <p id="controls-info">🎮 <b>Controles:</b> ⬅️ ➡️ Moverte | ⬆️ / Espacio: Saltar | 💥 <b>B</b> o Botón: ¡Ladrar!</p>
+                <p id="rules-info">⚠️ <b>Evitá:</b> Los militantes de violeta "VLLA" (o ladrales para asustarlos).</p>
+                <p id="hearts-info">✌️ <b>Buscá ayuda:</b> Acercate a las personas con remera "Viva Perón" para recibir caricias y <b>ganar vidas</b> extra.</p>
+            </div>
+            <button id="start-btn" class="btn-action">¡EMPEZAR LA FUGA!</button>
+        </div>
+    </div>
+
+    <div id="touch-controls">
+        <div class="touch-group">
+            <button id="btn-left" class="ctrl-btn">⬅️ Izq</button>
+            <button id="btn-right" class="ctrl-btn">➡️ Der</button>
+        </div>
+        <div class="touch-group">
+            <button id="btn-jump" class="ctrl-btn">⬆️ Saltar</button>
+            <button id="btn-bark" class="ctrl-btn" style="background: #e11d48; border-color: #f43f5e;">🗣️ ¡LADRAR!</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const overlay = document.getElementById('overlay-screen');
+        const startBtn = document.getElementById('start-btn');
+        const titleEl = document.getElementById('game-title');
+        const subtitleEl = document.getElementById('game-subtitle');
+        const scoreVal = document.getElementById('score-val');
+        const livesVal = document.getElementById('lives-val');
+        const distVal = document.getElementById('dist-val');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function playSound(type) {
+            try {
+                if (!audioCtx) audioCtx = new AudioCtx();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'eat') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(320, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.12);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.14);
+                    osc.start(now);
+                    osc.stop(now + 0.14);
+                } else if (type === 'bark') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(350, now);
+                    osc.frequency.exponentialRampToValueAtTime(130, now + 0.2);
+                    gain.gain.setValueAtTime(0.4, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.22);
+                    osc.start(now);
+                    osc.stop(now + 0.22);
+                } else if (type === 'jump') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(200, now);
+                    osc.frequency.exponentialRampToValueAtTime(480, now + 0.16);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.18);
+                    osc.start(now);
+                    osc.stop(now + 0.18);
+                } else if (type === 'hit') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.exponentialRampToValueAtTime(50, now + 0.28);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.28);
+                    osc.start(now);
+                    osc.stop(now + 0.28);
+                } else if (type === 'pet') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.1);
+                    osc.frequency.setValueAtTime(783.99, now + 0.2);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'win') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.setValueAtTime(554.37, now + 0.12);
+                    osc.frequency.setValueAtTime(659.25, now + 0.24);
+                    osc.frequency.setValueAtTime(880, now + 0.36);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.6);
+                    osc.start(now);
+                    osc.stop(now + 0.6);
+                }
+            } catch (e) {}
+        }
+
+        // Estado
+        let gameState = 'ready'; // 'playing', 'cutscene', 'gameover'
+        let score = 0;
+        let lives = 3;
+        let distanceRun = 0;
+        const TARGET_DISTANCE = 1600; // Recorrido hasta el final
+        let worldOffset = 0;
+        let speed = 4.2;
+        let barkWave = null;
+        let cutsceneStep = 0;
+        let cutsceneTimer = 0;
+
+        const keys = { left: false, right: false, jump: false };
+
+        const kukita = {
+            x: 220,
+            y: 350,
+            width: 65,
+            height: 48,
+            vy: 0,
+            groundY: 350,
+            isJumping: false,
+            facingRight: true,
+            legAngle: 0
+        };
+
+        // Lucía persiguiendo detrás
+        const lucia = {
+            x: 50,
+            y: 285,
+            width: 48,
+            height: 110,
+            legAngle: 0,
+            armAngle: 0
+        };
+
+        // Personajes del final
+        const finaleGroup = {
+            marciaX: 580,
+            mechiX: 680,
+            y: 285
+        };
+
+        let vllaPeople = [];
+        let peronPeople = [];
+        let poops = [];
+        let floatingTexts = [];
+        let scenery = [];
+
+        function initScenery() {
+            scenery = [];
+            for (let i = 0; i < 14; i++) {
+                scenery.push({
+                    x: i * 150,
+                    type: i % 2 === 0 ? 'building' : 'tree',
+                    height: 120 + Math.random() * 140,
+                    width: 70 + Math.random() * 60,
+                    color: i % 2 === 0 ? `hsl(${215 + (i * 12) % 30}, 24%, 32%)` : '#166534'
+                });
+            }
+        }
+
+        function addFloatingText(x, y, text, color) {
+            floatingTexts.push({
+                x: x,
+                y: y,
+                text: text,
+                color: color || '#fbbf24',
+                alpha: 1,
+                vy: -1.6
+            });
+        }
+
+        function spawnEntities() {
+            if (distanceRun > TARGET_DISTANCE - 200) return; // Ya llegando al final
+
+            // Caquitas
+            if (Math.random() < 0.024 && poops.length < 4) {
+                poops.push({ x: canvas.width + 40, y: 382, width: 26, height: 22 });
+            }
+
+            // Militantes VLLA (Obstáculo)
+            if (Math.random() < 0.016 && vllaPeople.length < 2) {
+                vllaPeople.push({
+                    x: canvas.width + 60,
+                    y: 285,
+                    width: 46,
+                    height: 110,
+                    speed: 2.2,
+                    legAngle: 0
+                });
+            }
+
+            // Militantes Viva Perón (Aliados - Caricias / Vidas)
+            if (Math.random() < 0.009 && peronPeople.length < 1) {
+                peronPeople.push({
+                    x: canvas.width + 70,
+                    y: 285,
+                    width: 46,
+                    height: 110,
+                    petted: false,
+                    legAngle: 0
+                });
+            }
+        }
+
+        function triggerBark() {
+            if (gameState !== 'playing') return;
+            playSound('bark');
+            barkWave = {
+                x: kukita.x + (kukita.facingRight ? 55 : 10),
+                y: kukita.y + 15,
+                radius: 12,
+                maxRadius: 85,
+                dir: kukita.facingRight ? 1 : -1
+            };
+
+            // Ahuyentar militantes VLLA
+            vllaPeople.forEach((p, idx) => {
+                const dist = Math.hypot((kukita.x + 30) - (p.x + 20), kukita.y - p.y);
+                if (dist < 140) {
+                    addFloatingText(p.x, p.y - 10, '¡ESPANTADO! +15', '#f43f5e');
+                    vllaPeople.splice(idx, 1);
+                    score += 15;
+                    scoreVal.textContent = score;
+                }
+            });
+        }
+
+        function update() {
+            if (gameState === 'playing') {
+                distanceRun += speed;
+                worldOffset += speed;
+
+                // Barra progreso
+                const pct = Math.min(100, Math.floor((distanceRun / TARGET_DISTANCE) * 100));
+                progressBarFill.style.width = pct + '%';
+                distVal.textContent = pct + '%';
+
+                if (distanceRun >= TARGET_DISTANCE) {
+                    startCutscene();
+                    return;
+                }
+
+                // Movimiento Kukita
+                if (keys.left) {
+                    kukita.x = Math.max(130, kukita.x - 5);
+                    kukita.facingRight = false;
+                }
+                if (keys.right) {
+                    kukita.x = Math.min(canvas.width - 120, kukita.x + 5.5);
+                    kukita.facingRight = true;
+                }
+
+                // Salto y Gravedad
+                if (keys.jump && !kukita.isJumping) {
+                    kukita.vy = -13.5;
+                    kukita.isJumping = true;
+                    playSound('jump');
+                }
+                kukita.y += kukita.vy;
+                if (kukita.isJumping) {
+                    kukita.vy += 0.68;
+                    if (kukita.y >= kukita.groundY) {
+                        kukita.y = kukita.groundY;
+                        kukita.vy = 0;
+                        kukita.isJumping = false;
+                    }
+                }
+                kukita.legAngle += 0.3;
+
+                // Animación Lucía persiguiendo
+                lucia.legAngle += 0.25;
+                lucia.armAngle += 0.25;
+                // Si Kukita se frena mucho hacia la izquierda, Lucía se acerca
+                lucia.x = Math.max(30, kukita.x - 140);
+
+                // Onda de ladrido
+                if (barkWave) {
+                    barkWave.radius += 7;
+                    barkWave.x += barkWave.dir * 4.5;
+                    if (barkWave.radius > barkWave.maxRadius) barkWave = null;
+                }
+
+                // Caquitas
+                for (let i = poops.length - 1; i >= 0; i--) {
+                    poops[i].x -= speed;
+                    if (
+                        kukita.x < poops[i].x + poops[i].width &&
+                        kukita.x + kukita.width > poops[i].x &&
+                        kukita.y < poops[i].y + poops[i].height &&
+                        kukita.y + kukita.height > poops[i].y
+                    ) {
+                        playSound('eat');
+                        addFloatingText(poops[i].x, poops[i].y - 8, '+10', '#f59e0b');
+                        poops.splice(i, 1);
+                        score += 10;
+                        scoreVal.textContent = score;
+                        continue;
+                    }
+                    if (poops[i] && poops[i].x < -40) poops.splice(i, 1);
+                }
+
+                // Militantes VLLA (Obstáculos)
+                for (let i = vllaPeople.length - 1; i >= 0; i--) {
+                    const p = vllaPeople[i];
+                    p.x -= (speed + p.speed);
+                    p.legAngle += 0.25;
+
+                    // Colisión dañina con Kukita
+                    if (
+                        kukita.x + 10 < p.x + p.width - 8 &&
+                        kukita.x + kukita.width - 10 > p.x + 8 &&
+                        kukita.y < p.y + p.height &&
+                        kukita.y + kukita.height > p.y + 40
+                    ) {
+                        playSound('hit');
+                        addFloatingText(kukita.x + 20, kukita.y - 12, '¡TE AGARRÓ! -1 ❤️', '#ef4444');
+                        vllaPeople.splice(i, 1);
+                        lives--;
+                        updateLivesUI();
+                        if (lives <= 0) gameOver();
+                        continue;
+                    }
+                    if (p.x < -60) vllaPeople.splice(i, 1);
+                }
+
+                // Aliados con remera "Viva Perón" (Suman vidas)
+                for (let i = peronPeople.length - 1; i >= 0; i--) {
+                    const ap = peronPeople[i];
+                    ap.x -= speed;
+                    ap.legAngle += 0.15;
+
+                    // Caricia al acercarse
+                    if (!ap.petted && Math.abs((kukita.x + kukita.width / 2) - (ap.x + ap.width / 2)) < 55 && kukita.y > 300) {
+                        ap.petted = true;
+                        playSound('pet');
+                        lives = Math.min(5, lives + 1);
+                        updateLivesUI();
+                        score += 25;
+                        scoreVal.textContent = score;
+                        addFloatingText(ap.x - 20, ap.y - 18, '❤️ CARICIA DE COMPAÑERO (+1 ❤️)', '#38bdf8');
+                    }
+                    if (ap.x < -70) peronPeople.splice(i, 1);
+                }
+
+                // Textos flotantes
+                for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                    const ft = floatingTexts[i];
+                    ft.y += ft.vy;
+                    ft.alpha -= 0.025;
+                    if (ft.alpha <= 0) floatingTexts.splice(i, 1);
+                }
+
+                spawnEntities();
+            } else if (gameState === 'cutscene') {
+                cutsceneTimer++;
+
+                // Kukita camina feliz hacia Marcia y Mechi
+                if (kukita.x < finaleGroup.marciaX - 55) {
+                    kukita.x += 2.5;
+                    kukita.legAngle += 0.3;
+                } else {
+                    kukita.legAngle = 0;
+                }
+
+                // Lucía llega corriendo agitada por detrás
+                if (lucia.x < 360) {
+                    lucia.x += 3.2;
+                    lucia.legAngle += 0.35;
+                }
+            }
+        }
+
+        function startCutscene() {
+            gameState = 'cutscene';
+            cutsceneTimer = 0;
+            vllaPeople = [];
+            peronPeople = [];
+            poops = [];
+            barkWave = null;
+            playSound('win');
+            progressBarFill.style.width = '100%';
+            distVal.textContent = '100%';
+        }
+
+        function updateLivesUI() {
+            livesVal.textContent = '❤️'.repeat(Math.max(0, lives));
+        }
+
+        // ================= DIBUJO DE PERSONAJES ================= //
+
+        // DIBUJAR A LUCÍA (Rubia, remera violeta VLLA, persiguiendo)
+        function drawLucia(x, y, isCrying = false) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Nombre arriba de la cabeza
+            ctx.fillStyle = '#fde047';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('LUCÍA', 22, -18);
+
+            // Pelo rubio largo ondeando
+            ctx.fillStyle = '#facc15';
+            ctx.beginPath();
+            ctx.arc(22, 10, 16, 0, Math.PI * 2);
+            ctx.fill();
+            // Mechones largos hacia atrás
+            ctx.beginPath();
+            ctx.moveTo(10, 12);
+            ctx.quadraticCurveTo(-15, 25 + Math.sin(lucia.legAngle) * 5, -8, 48);
+            ctx.lineTo(16, 26);
+            ctx.fill();
+
+            // Cabeza
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.arc(22, 10, 11, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Ojos y lágrimas si está llorando
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(25, 9, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (isCrying) {
+                // Lágrimas brotando
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.arc(27, 14 + (cutsceneTimer % 20), 2.5, 0, Math.PI * 2);
+                ctx.arc(23, 16 + ((cutsceneTimer + 10) % 20), 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Remera violeta "VLLA"
+            ctx.fillStyle = '#7c3aed';
+            ctx.beginPath();
+            ctx.roundRect(10, 22, 26, 38, 5);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 9px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('VLLA', 23, 44);
+
+            // Brazos hacia adelante
+            ctx.strokeStyle = '#fed7aa';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(22, 28);
+            ctx.lineTo(38 + Math.cos(lucia.legAngle) * 8, 36);
+            ctx.stroke();
+
+            // Piernas corriendo
+            ctx.fillStyle = '#334155'; // Pantalón
+            const lLeg = Math.sin(lucia.legAngle) * 14;
+            ctx.fillRect(12, 60, 8, 38 + lLeg);
+            ctx.fillRect(24, 60, 8, 38 - lLeg);
+
+            // Zapatillas
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(10, 96 + lLeg, 12, 6);
+            ctx.fillRect(22, 96 - lLeg, 12, 6);
+
+            ctx.restore();
+        }
+
+        // DIBUJAR MILITANTE VLLA (Obstáculo)
+        function drawVllaPerson(p) {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+
+            // Cabeza
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.arc(22, 10, 11, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pelo castaño corto
+            ctx.fillStyle = '#451a03';
+            ctx.beginPath();
+            ctx.arc(22, 7, 12, Math.PI, Math.PI * 2);
+            ctx.fill();
+
+            // Cara enojada/determinada mirando a la izquierda
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(17, 10, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Remera violeta VLLA
+            ctx.fillStyle = '#7c3aed';
+            ctx.beginPath();
+            ctx.roundRect(8, 22, 28, 38, 5);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 9px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('VLLA', 22, 44);
+
+            // Brazos tratando de agarrar a Kukita
+            ctx.strokeStyle = '#fed7aa';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(20, 28);
+            ctx.lineTo(2, 38);
+            ctx.stroke();
+
+            // Piernas
+            ctx.fillStyle = '#1e293b';
+            const leg = Math.sin(p.legAngle) * 12;
+            ctx.fillRect(10, 60, 8, 36 + leg);
+            ctx.fillRect(24, 60, 8, 36 - leg);
+
+            ctx.restore();
+        }
+
+        // DIBUJAR PERSONA CON REMERA "VIVA PERÓN" (Aliado)
+        function drawPeronPerson(p) {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+
+            // Cabeza y sonrisa
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.arc(22, 10, 12, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Boina / Gorrito o pelo
+            ctx.fillStyle = '#0284c7';
+            ctx.beginPath();
+            ctx.arc(22, 5, 13, Math.PI, Math.PI * 2);
+            ctx.fill();
+
+            // Remera celeste con "V. PERÓN"
+            ctx.fillStyle = '#0284c7';
+            ctx.beginPath();
+            ctx.roundRect(8, 22, 32, 40, 6);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 7px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('VIVA', 24, 38);
+            ctx.fillText('PERÓN', 24, 48);
+
+            // Brazo extendido hacia abajo acariciando
+            ctx.strokeStyle = '#fed7aa';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(20, 28);
+            ctx.lineTo(10, 52);
+            ctx.stroke();
+
+            // Corazoncito flotando sobre ellos
+            ctx.font = '14px serif';
+            ctx.fillText('✌️❤️', 14, -6);
+
+            // Piernas
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(12, 62, 8, 36);
+            ctx.fillRect(24, 62, 8, 36);
+
+            ctx.restore();
+        }
+
+        // DIBUJAR A MARCIA Y MECHI (Final con remera "Perón Perón")
+        function drawFinaleGirls() {
+            // Marcia
+            drawPeronPeronGirl(finaleGroup.marciaX, finaleGroup.y, 'MARCIA', '#451a03', true);
+            // Mechi
+            drawPeronPeronGirl(finaleGroup.mechiX, finaleGroup.y, 'MECHI', '#92400e', false);
+        }
+
+        function drawPeronPeronGirl(x, y, name, hairColor, isWaving) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Nombre
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(name, 22, -18);
+
+            // Pelo
+            ctx.fillStyle = hairColor;
+            ctx.beginPath();
+            ctx.arc(22, 10, 15, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cara
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.arc(22, 11, 11, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Ojos felices
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(18, 11, 2.5, Math.PI, 0);
+            ctx.arc(26, 11, 2.5, Math.PI, 0);
+            ctx.stroke();
+
+            // Remera "Perón Perón"
+            ctx.fillStyle = '#0ea5e9';
+            ctx.beginPath();
+            ctx.roundRect(8, 22, 30, 38, 6);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 6.5px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('PERÓN', 23, 37);
+            ctx.fillText('PERÓN', 23, 47);
+
+            // Brazos saludando y acariciando a Kukita
+            ctx.strokeStyle = '#fed7aa';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(14, 28);
+            ctx.lineTo(-2, 46 + Math.sin(Date.now() / 200) * 4);
+            ctx.stroke();
+
+            // Pantalón y piernas
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(11, 60, 8, 38);
+            ctx.fillRect(23, 60, 8, 38);
+
+            // Corazones de alegría
+            ctx.font = '14px serif';
+            ctx.fillText('❤️', 16, -4);
+
+            ctx.restore();
+        }
+
+        // GLOBO DE DIÁLOGO DE LUCÍA
+        function drawLuciaCryingBubble(x, y) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Fondo del globo blanco
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#7c3aed';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.roundRect(-80, -95, 230, 60, 14);
+            ctx.fill();
+            ctx.stroke();
+
+            // Pico del globo apuntando a Lucía
+            ctx.beginPath();
+            ctx.moveTo(10, -35);
+            ctx.lineTo(20, -10);
+            ctx.lineTo(35, -35);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.stroke();
+
+            // Texto del globo
+            ctx.fillStyle = '#7c3aed';
+            ctx.font = '900 13px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('¡Marcia! ¡Mechi! ¿Por qué?! 😭', 35, -60);
+            ctx.restore();
+        }
+
+        // DIBUJAR A KUKITA (Mantiene su ropita rosa con su nombre)
+        function drawKukita(k) {
+            ctx.save();
+            ctx.translate(k.x + k.width / 2, k.y + k.height / 2);
+            if (!k.facingRight) ctx.scale(-1, 1);
+
+            // Correa rota colgando hacia atrás
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(-10, -5);
+            ctx.quadraticCurveTo(-25, -2 + Math.sin(k.legAngle) * 6, -42, 6);
+            ctx.stroke();
+
+            // Cola batiéndose de felicidad
+            ctx.strokeStyle = '#18181b';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(-24, -2);
+            ctx.quadraticCurveTo(-34, -18 + Math.sin(k.legAngle * 1.8) * 10, -26, -26);
+            ctx.stroke();
+
+            // Patas
+            ctx.fillStyle = '#18181b';
+            const legWalk1 = Math.sin(k.legAngle) * 7;
+            const legWalk2 = -Math.sin(k.legAngle) * 7;
+            ctx.fillRect(-18, 12, 6, 14 + (k.isJumping ? -2 : legWalk1));
+            ctx.fillRect(-8, 12, 6, 14 + (k.isJumping ? -2 : -legWalk1));
+            ctx.fillRect(8, 12, 6, 14 + (k.isJumping ? 4 : legWalk2));
+            ctx.fillRect(18, 12, 6, 14 + (k.isJumping ? 4 : -legWalk2));
+
+            // Cuerpo negro
+            ctx.beginPath();
+            ctx.roundRect(-22, -6, 42, 24, 10);
+            ctx.fillStyle = '#18181b';
+            ctx.fill();
+
+            // REMERA ROSA CON EL NOMBRE KUKITA
+            ctx.beginPath();
+            ctx.roundRect(-16, -7, 28, 22, 6);
+            ctx.fillStyle = '#ec4899';
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 7px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('KUKITA', -2, 5);
+
+            // Cabeza
+            ctx.beginPath();
+            ctx.arc(18, -10, 14, 0, Math.PI * 2);
+            ctx.fillStyle = '#18181b';
+            ctx.fill();
+
+            // Hocico
+            ctx.beginPath();
+            ctx.ellipse(28, -6, 7, 5, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#27272a';
+            ctx.fill();
+
+            // Nariz
+            ctx.beginPath();
+            ctx.arc(33, -7, 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#09090b';
+            ctx.fill();
+
+            // Ojo
+            ctx.beginPath();
+            ctx.arc(20, -12, 3.2, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(21, -12, 1.8, 0, Math.PI * 2);
+            ctx.fillStyle = '#000000';
+            ctx.fill();
+
+            // Orejita caída
+            ctx.beginPath();
+            ctx.ellipse(10, -14, 6, 10, Math.PI / 6, 0, Math.PI * 2);
+            ctx.fillStyle = '#09090b';
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function drawPoop(p) {
+            ctx.font = '22px serif';
+            ctx.fillText('💩', p.x, p.y + 18);
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Cielo
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, 360);
+            skyGrad.addColorStop(0, '#090d16');
+            skyGrad.addColorStop(1, '#1e293b');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Fondo urbano
+            scenery.forEach(item => {
+                const drawX = ((item.x - worldOffset * 0.35) % (canvas.width + 200)) - 100;
+                ctx.fillStyle = item.color;
+                if (item.type === 'building') {
+                    ctx.fillRect(drawX, 400 - item.height, item.width, item.height);
+                    ctx.fillStyle = 'rgba(254, 240, 138, 0.35)';
+                    for (let wy = 420 - item.height; wy < 380; wy += 26) {
+                        ctx.fillRect(drawX + 12, wy, 12, 14);
+                        ctx.fillRect(drawX + item.width - 24, wy, 12, 14);
+                    }
+                } else {
+                    ctx.fillStyle = '#78350f';
+                    ctx.fillRect(drawX + 18, 330, 12, 70);
+                    ctx.fillStyle = '#15803d';
+                    ctx.beginPath();
+                    ctx.arc(drawX + 24, 320, 34, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+
+            // Vereda
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(0, 400, canvas.width, 40);
+            ctx.fillStyle = '#475569';
+            for (let bx = - (worldOffset % 40); bx < canvas.width; bx += 40) {
+                ctx.fillRect(bx, 400, 2, 40);
+            }
+            // Calle
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 440, canvas.width, 80);
+
+            // Entidades activas durante el juego
+            if (gameState === 'playing') {
+                poops.forEach(drawPoop);
+                vllaPeople.forEach(drawVllaPerson);
+                peronPeople.forEach(drawPeronPerson);
+                drawLucia(lucia.x, lucia.y, false);
+            }
+
+            // Personajes en escena final
+            if (gameState === 'cutscene') {
+                drawFinaleGirls();
+                drawLucia(lucia.x, lucia.y, true);
+                if (lucia.x >= 350) {
+                    drawLuciaCryingBubble(lucia.x, lucia.y);
+                }
+            }
+
+            // Dibujar a Kukita
+            drawKukita(kukita);
+
+            // Onda de ladrido
+            if (barkWave) {
+                ctx.save();
+                ctx.strokeStyle = '#fbbf24';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.arc(barkWave.x, barkWave.y, barkWave.radius, -Math.PI / 3, Math.PI / 3, barkWave.dir === -1);
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Textos flotantes
+            floatingTexts.forEach(ft => {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, ft.alpha);
+                ctx.font = 'bold 15px sans-serif';
+                ctx.fillStyle = ft.color;
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.restore();
+            });
+
+            // Botón de final si terminó la cinemática
+            if (gameState === 'cutscene' && cutsceneTimer > 180) {
+                ctx.save();
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.7)';
+                ctx.roundRect(240, 450, 320, 50, 25);
+                ctx.fill();
+                ctx.fillStyle = '#f59e0b';
+                ctx.font = 'bold 16px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🎉 ¡MISIÓN CUMPLIDA! Click para jugar', 400, 480);
+                ctx.restore();
+            }
+        }
+
+        function gameLoop() {
+            update();
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function startGame() {
+            score = 0;
+            lives = 3;
+            distanceRun = 0;
+            scoreVal.textContent = score;
+            updateLivesUI();
+            distVal.textContent = '0%';
+            progressBarFill.style.width = '0%';
+            poops = [];
+            vllaPeople = [];
+            peronPeople = [];
+            floatingTexts = [];
+            kukita.x = 220;
+            kukita.y = 350;
+            kukita.vy = 0;
+            kukita.isJumping = false;
+            lucia.x = 50;
+            initScenery();
+            overlay.style.display = 'none';
+            gameState = 'playing';
+        }
+
+        function gameOver() {
+            gameState = 'gameover';
+            titleEl.textContent = '¡TE ATRAPÓ LUCÍA!';
+            subtitleEl.textContent = `No lograste llegar con Marcia y Mechi... pero sumaste ${score} puntos en tu intento.`;
+            startBtn.textContent = '¡VOLVER A ESCAPAR!';
+            overlay.style.display = 'flex';
+        }
+
+        // Teclado
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+            if (e.code === 'ArrowUp' || e.code === 'Space') {
+                keys.jump = true;
+                e.preventDefault();
+            }
+            if (e.code === 'KeyB' || e.code === 'KeyX') {
+                triggerBark();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+            if (e.code === 'ArrowUp' || e.code === 'Space') keys.jump = false;
+        });
+
+        // Controles táctiles
+        document.getElementById('btn-left').addEventListener('pointerdown', () => keys.left = true);
+        document.getElementById('btn-left').addEventListener('pointerup', () => keys.left = false);
+        document.getElementById('btn-right').addEventListener('pointerdown', () => keys.right = true);
+        document.getElementById('btn-right').addEventListener('pointerup', () => keys.right = false);
+        document.getElementById('btn-jump').addEventListener('pointerdown', () => keys.jump = true);
+        document.getElementById('btn-jump').addEventListener('pointerup', () => keys.jump = false);
+        document.getElementById('btn-bark').addEventListener('pointerdown', triggerBark);
+
+        startBtn.addEventListener('click', startGame);
+
+        canvas.addEventListener('click', () => {
+            if (gameState === 'cutscene' && cutsceneTimer > 180) {
+                startGame();
+            }
+        });
+
+        initScenery();
+        render();
+        requestAnimationFrame(gameLoop);
+    </script>
+</body></html>
