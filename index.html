@@ -1,0 +1,2539 @@
+<html data-type="html" data-identifier="f1fca125-4b0b-4ec6-b971-4983606fb039" data-title="La grieta de casa — Experiencia completa" data-version="7" width="1200" height="800"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La grieta de casa</title>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap");
+
+    :root {
+      --black: #070707;
+      --dark: #111;
+      --panel: #181818;
+      --paper: #f3efe9;
+      --muted: #aaa5a0;
+      --pink: #cf3479;
+      --pink-light: #ff60aa;
+      --yellow: #e7e51f;
+      --cyan: #63ded8;
+      --green: #6be7aa;
+      --red: #ff4b5e;
+      --purple: #7654d8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      color: var(--paper);
+      background: var(--black);
+    }
+
+    body {
+      overflow-x: hidden;
+      font-family: "DM Mono", monospace;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .app {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(circle at 78% 22%, rgba(207,52,121,.14), transparent 28%),
+        linear-gradient(135deg, #050505, #151515 57%, #080808);
+    }
+
+    .app::after {
+      content: "";
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      pointer-events: none;
+      opacity: .08;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.28) 0 1px,
+        transparent 1px 4px
+      );
+    }
+
+    .view {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .shell {
+      width: min(1180px, 100%);
+      min-height: 100vh;
+      margin: auto;
+      padding: 24px 38px 40px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #3b3b3b;
+    }
+
+    .chapter,
+    .brand {
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .chapter {
+      color: var(--pink-light);
+      font-family: "Oswald", sans-serif;
+      font-size: 12px;
+      letter-spacing: .18em;
+    }
+
+    .brand {
+      color: #777;
+      font-size: 10px;
+      letter-spacing: .14em;
+    }
+
+    .tag,
+    .route-badge {
+      display: inline-block;
+      width: fit-content;
+      margin: 0 0 11px;
+      padding: 6px 10px;
+      color: white;
+      background: var(--pink);
+      font-family: "Oswald", sans-serif;
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .route-badge {
+      margin-top: 22px;
+      color: #070707;
+      background: var(--yellow);
+    }
+
+    .title {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(50px, 7vw, 90px);
+      font-weight: 700;
+      line-height: .87;
+      letter-spacing: -.04em;
+      text-transform: uppercase;
+      text-shadow: 5px 5px 0 rgba(207,52,121,.46);
+    }
+
+    .section-copy {
+      max-width: 780px;
+      margin: 20px 0;
+      color: #cbc6c0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .section-copy strong,
+    .objective strong,
+    .overlay-copy strong {
+      color: var(--yellow);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      padding: 13px 22px;
+      border: 2px solid var(--pink);
+      color: white;
+      background: var(--pink);
+      cursor: pointer;
+      font-family: "Oswald", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      box-shadow: 6px 6px 0 #000, 8px 8px 0 var(--pink);
+      transition: .17s ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      color: #050505;
+      border-color: var(--yellow);
+      background: var(--yellow);
+      outline: none;
+      transform: translate(3px, 3px);
+      box-shadow: 3px 3px 0 #000, 5px 5px 0 var(--pink);
+    }
+
+    .button.secondary {
+      color: #ddd;
+      border-color: #575757;
+      background: #171717;
+      box-shadow: none;
+    }
+
+    .button.skip {
+      color: var(--yellow);
+      border-color: var(--yellow);
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .button.small {
+      min-height: 43px;
+      padding: 9px 15px;
+      font-size: 12px;
+      box-shadow: none;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 13px;
+      margin-top: 22px;
+    }
+
+    /* PORTADA */
+
+    .cover {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover-content {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: min(1180px, 100%);
+      min-height: 100vh;
+      margin: auto;
+      padding: 42px 54px;
+    }
+
+    .cover-title {
+      max-width: 730px;
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(72px, 8.5vw, 112px);
+      line-height: .84;
+      letter-spacing: -.05em;
+      text-transform: uppercase;
+      text-shadow: 6px 6px 0 rgba(207,52,121,.5);
+    }
+
+    .cover-subtitle {
+      width: fit-content;
+      margin: 20px 0 23px;
+      padding: 6px 12px;
+      background: var(--pink);
+      font-family: "Oswald", sans-serif;
+      font-size: 15px;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+
+    .cover-story {
+      width: min(690px, 64%);
+      padding-left: 18px;
+      border-left: 2px solid var(--pink);
+    }
+
+    .cover-story p {
+      margin: 0 0 12px;
+      color: #d5d1cb;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .cover-story strong {
+      color: white;
+    }
+
+    .secret {
+      color: var(--yellow);
+      font-weight: 700;
+    }
+
+    .cover-mission {
+      width: min(750px, 68%);
+      margin: 14px 0 24px;
+      padding: 14px 17px;
+      border-top: 1px solid var(--pink);
+      border-bottom: 1px solid var(--pink);
+      background: linear-gradient(90deg, rgba(207,52,121,.18), transparent);
+    }
+
+    .cover-mission p {
+      margin: 0;
+      color: #ddd9d3;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .cover-art {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      right: 0;
+      width: 47%;
+      height: 100%;
+      overflow: hidden;
+      background: #181818;
+      mask-image: linear-gradient(to right, transparent 0%, #000 25%, #000 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 25%, #000 100%);
+    }
+
+    .cover-art::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(7,7,7,.55), transparent 46%),
+        linear-gradient(to top, rgba(7,7,7,.8), transparent 45%),
+        rgba(207,52,121,.04);
+      pointer-events: none;
+    }
+
+    .cover-art object {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      object-fit: cover;
+      filter: saturate(.83) contrast(1.06) brightness(.74);
+      transform: scale(1.08);
+    }
+
+    .character-labels {
+      position: absolute;
+      z-index: 4;
+      right: 5%;
+      bottom: 6%;
+      display: flex;
+      gap: 9px;
+    }
+
+    .character-label {
+      padding: 8px 12px;
+      color: white;
+      background: rgba(207,52,121,.94);
+      font-family: "Oswald", sans-serif;
+      font-size: 13px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .character-label:last-child {
+      color: #080808;
+      background: var(--cyan);
+    }
+
+    /* JUEGO DE SIGILO */
+
+    .game-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 26px;
+      padding: 18px 0 15px;
+    }
+
+    .objective {
+      width: min(440px, 44%);
+      margin: 0;
+      color: #bdb8b2;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .hud {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 25px;
+      padding: 10px 14px;
+      border: 1px solid #3c3c3c;
+      background: rgba(7,7,7,.92);
+    }
+
+    .hud-block.right {
+      text-align: right;
+    }
+
+    .hud-label {
+      display: block;
+      margin-bottom: 5px;
+      color: #888;
+      font-size: 9px;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .meter-track {
+      height: 13px;
+      padding: 2px;
+      border: 1px solid #555;
+      background: #050505;
+    }
+
+    .meter-fill {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--yellow), #ff8d29, var(--red));
+    }
+
+    .timer,
+    .counter {
+      color: var(--cyan);
+      font-family: "Oswald", sans-serif;
+      font-size: 21px;
+    }
+
+    .counter {
+      color: white;
+    }
+
+    .counter span {
+      color: var(--yellow);
+    }
+
+    .game-frame {
+      position: relative;
+      margin-top: 12px;
+      overflow: hidden;
+      border: 2px solid #4a4a4a;
+      background: #1c1c1c;
+      box-shadow: 10px 10px 0 #000, 12px 12px 0 rgba(207,52,121,.35);
+    }
+
+    #stealth-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 430px;
+      touch-action: none;
+    }
+
+    .overlay {
+      position: absolute;
+      z-index: 20;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(3,3,3,.88);
+      backdrop-filter: blur(4px);
+    }
+
+    .overlay.visible {
+      display: flex;
+    }
+
+    .overlay-card {
+      width: min(690px, 96%);
+      padding: 27px 30px 30px;
+      border-top: 1px solid var(--pink);
+      border-bottom: 1px solid var(--pink);
+      background:
+        radial-gradient(circle at center, rgba(207,52,121,.14), transparent 70%),
+        #121212;
+      box-shadow: 0 20px 55px rgba(0,0,0,.7);
+      text-align: center;
+    }
+
+    .overlay-title {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(40px, 5.5vw, 68px);
+      line-height: .9;
+      text-transform: uppercase;
+      text-shadow: 4px 4px 0 rgba(207,52,121,.42);
+    }
+
+    .overlay-copy {
+      margin: 18px auto 0;
+      color: #d2cec8;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .instructions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .instructions li {
+      padding: 11px;
+      border: 1px solid #414141;
+      color: #c7c2bc;
+      background: #181818;
+      font-size: 10px;
+      line-height: 1.4;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .instructions span {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 25px;
+    }
+
+    .touch-controls {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+      margin-top: 17px;
+    }
+
+    .dpad {
+      display: grid;
+      grid-template-columns: repeat(3, 48px);
+      grid-template-rows: repeat(2, 43px);
+      gap: 4px;
+    }
+
+    .control {
+      border: 1px solid #555;
+      color: white;
+      background: #191919;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .control.active,
+    .control:active {
+      color: #050505;
+      border-color: var(--yellow);
+      background: var(--yellow);
+    }
+
+    .up { grid-column: 2; }
+    .left { grid-column: 1; grid-row: 2; }
+    .down { grid-column: 2; grid-row: 2; }
+    .right-control { grid-column: 3; grid-row: 2; }
+
+    .run {
+      width: 105px;
+      height: 58px;
+      color: var(--pink-light);
+      border-color: var(--pink);
+      font-family: "Oswald", sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* COARTADA EXPRESS SIN IMÁGENES */
+
+    .coartada-view {
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .infinite-background {
+      position: absolute;
+      z-index: 0;
+      inset: -140px;
+      background:
+        linear-gradient(
+          115deg,
+          transparent 0 37%,
+          rgba(207,52,121,.08) 37.2% 37.5%,
+          transparent 37.7%
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 79px,
+          rgba(255,255,255,.025) 80px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0 79px,
+          rgba(255,255,255,.022) 80px
+        );
+      animation: infiniteDrift 18s linear infinite;
+    }
+
+    .infinite-background::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-radial-gradient(
+        circle at center,
+        transparent 0 59px,
+        rgba(207,52,121,.045) 60px 61px,
+        transparent 62px 119px
+      );
+      animation: infinitePulse 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes infiniteDrift {
+      to {
+        transform: translate3d(80px, 80px, 0);
+      }
+    }
+
+    @keyframes infinitePulse {
+      from {
+        transform: scale(.9);
+      }
+
+      to {
+        transform: scale(1.14) rotate(5deg);
+      }
+    }
+
+    .coartada-view .shell {
+      position: relative;
+      z-index: 2;
+    }
+
+    .coartada-intro {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 850px;
+      margin: auto;
+      padding: 28px 20px 12px;
+      text-align: center;
+    }
+
+    .coartada-intro .section-copy {
+      margin-right: auto;
+      margin-left: auto;
+      text-align: center;
+    }
+
+    .message-card {
+      width: min(620px, 100%);
+      margin: 18px auto 0;
+      padding: 14px 20px;
+      border-top: 1px solid var(--pink);
+      border-bottom: 1px solid var(--pink);
+      color: #e4dfd9;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(207,52,121,.18),
+        transparent
+      );
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .message-card strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--pink-light);
+      font-family: "Oswald", sans-serif;
+      font-size: 13px;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .coartada-stage {
+      position: relative;
+      width: min(900px, 100%);
+      min-height: 500px;
+      margin: 10px auto 0;
+      overflow: hidden;
+      border-top: 1px solid rgba(207,52,121,.42);
+      border-bottom: 1px solid rgba(207,52,121,.42);
+      background:
+        radial-gradient(circle at 50% 58%, rgba(207,52,121,.12), transparent 34%),
+        linear-gradient(90deg, transparent, rgba(255,255,255,.018), transparent);
+    }
+
+    .coartada-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .2;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.15) 0 1px,
+        transparent 1px 4px
+      );
+    }
+
+    .status-bar {
+      position: absolute;
+      z-index: 12;
+      top: 14px;
+      left: 18px;
+      right: 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 12px 16px;
+      color: white;
+      background: rgba(5,5,5,.9);
+      font-family: "Oswald", sans-serif;
+      font-size: 15px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .status-bar strong {
+      color: var(--yellow);
+    }
+
+    .woman-outline {
+      position: absolute;
+      z-index: 2;
+      left: 50%;
+      bottom: 25px;
+      width: 260px;
+      height: 350px;
+      transform: translateX(-50%);
+      filter: drop-shadow(0 0 14px rgba(207,52,121,.25));
+    }
+
+    .hair-back {
+      position: absolute;
+      left: 31px;
+      top: 22px;
+      width: 198px;
+      height: 244px;
+      border: 3px solid #f1d263;
+      border-radius: 48% 48% 39% 40% / 30% 30% 65% 66%;
+      opacity: .9;
+    }
+
+    .hair-back::before,
+    .hair-back::after {
+      content: "";
+      position: absolute;
+      top: 37px;
+      width: 72px;
+      height: 205px;
+      border: 2px solid rgba(241,210,99,.75);
+      border-radius: 50%;
+    }
+
+    .hair-back::before {
+      left: -21px;
+      transform: rotate(9deg);
+    }
+
+    .hair-back::after {
+      right: -18px;
+      transform: rotate(-8deg);
+    }
+
+    .head-outline {
+      position: absolute;
+      left: 73px;
+      top: 43px;
+      width: 115px;
+      height: 143px;
+      border: 3px solid rgba(244,239,232,.88);
+      border-radius: 47% 47% 44% 44%;
+      background: rgba(7,7,7,.34);
+    }
+
+    .head-outline::before {
+      content: "";
+      position: absolute;
+      left: 25px;
+      top: 54px;
+      width: 62px;
+      height: 19px;
+      border-top: 2px solid rgba(244,239,232,.65);
+      border-radius: 50%;
+    }
+
+    .head-outline::after {
+      content: "";
+      position: absolute;
+      left: 42px;
+      bottom: 25px;
+      width: 31px;
+      height: 11px;
+      border-bottom: 2px solid rgba(244,239,232,.7);
+      border-radius: 50%;
+    }
+
+    .hair-fringe {
+      position: absolute;
+      left: 62px;
+      top: 34px;
+      width: 142px;
+      height: 85px;
+      border-top: 4px solid #f1d263;
+      border-radius: 50%;
+      transform: rotate(-7deg);
+    }
+
+    .hair-fringe::after {
+      content: "";
+      position: absolute;
+      right: 1px;
+      top: 15px;
+      width: 83px;
+      height: 53px;
+      border-top: 3px solid #f1d263;
+      border-radius: 50%;
+      transform: rotate(17deg);
+    }
+
+    .neck-outline {
+      position: absolute;
+      left: 106px;
+      top: 176px;
+      width: 49px;
+      height: 43px;
+      border-right: 3px solid rgba(244,239,232,.76);
+      border-left: 3px solid rgba(244,239,232,.76);
+    }
+
+    .body-outline {
+      position: absolute;
+      left: 37px;
+      bottom: 0;
+      width: 188px;
+      height: 153px;
+      border: 3px solid rgba(244,239,232,.78);
+      border-bottom: 0;
+      border-radius: 48% 48% 0 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(207,52,121,.07),
+        rgba(7,7,7,.2)
+      );
+    }
+
+    .phone-outline {
+      position: absolute;
+      z-index: 4;
+      right: 29px;
+      bottom: 52px;
+      width: 54px;
+      height: 90px;
+      border: 3px solid var(--pink-light);
+      border-radius: 9px;
+      transform: rotate(8deg);
+      box-shadow: 0 0 13px rgba(207,52,121,.35);
+    }
+
+    .phone-outline::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 6px;
+      width: 18px;
+      height: 3px;
+      border-radius: 4px;
+      background: var(--pink-light);
+      transform: translateX(-50%);
+    }
+
+    .clue-object {
+      position: absolute;
+      z-index: 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 68px;
+      height: 68px;
+      padding: 0;
+      border: 2px solid rgba(255,255,255,.38);
+      border-radius: 50%;
+      color: white;
+      background: rgba(8,8,8,.78);
+      cursor: pointer;
+      font-size: 32px;
+      box-shadow: 0 7px 18px rgba(0,0,0,.55);
+      transition: .16s ease;
+    }
+
+    .clue-object:hover,
+    .clue-object:focus-visible {
+      border-color: var(--yellow);
+      background: rgba(207,52,121,.8);
+      outline: none;
+      transform: scale(1.12);
+    }
+
+    .clue-object.removed {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(.4);
+    }
+
+    .clue-credential { left: 8%; top: 26%; }
+    .clue-books { right: 8%; bottom: 17%; }
+    .clue-sign { right: 8%; top: 26%; }
+    .clue-schedule { left: 10%; bottom: 17%; }
+
+    .distractor-coffee {
+      left: 50%;
+      top: 20%;
+      transform: translateX(-50%);
+    }
+
+    .distractor-headphones {
+      left: 50%;
+      bottom: 4%;
+      transform: translateX(-50%);
+    }
+
+    .distractor-coffee:hover,
+    .distractor-coffee:focus-visible,
+    .distractor-headphones:hover,
+    .distractor-headphones:focus-visible {
+      transform: translateX(-50%) scale(1.12);
+    }
+
+    .coartada-feedback {
+      position: absolute;
+      z-index: 11;
+      left: 50%;
+      bottom: 18px;
+      width: min(430px, calc(100% - 180px));
+      margin: 0;
+      padding: 11px 15px;
+      color: white;
+      background: rgba(5,5,5,.92);
+      font-size: 11px;
+      line-height: 1.4;
+      text-align: center;
+      text-transform: uppercase;
+      transform: translateX(-50%);
+    }
+
+    .coartada-actions {
+      position: relative;
+      z-index: 5;
+      justify-content: center;
+    }
+
+    /* HISTORIETAS */
+
+    .comic-image-shell {
+      margin-top: 24px;
+      padding: 6px;
+      background: var(--paper);
+      box-shadow: 15px 15px 0 rgba(207,52,121,.28);
+    }
+
+    .comic-image {
+      display: block;
+      width: 100%;
+      min-height: 360px;
+      border: 0;
+      background: #222;
+    }
+
+    /* MATCH */
+
+    .match-layout {
+      display: grid;
+      grid-template-columns: minmax(270px,.72fr) minmax(440px,1.28fr);
+      gap: 38px;
+      align-items: start;
+      padding-top: 27px;
+    }
+
+    .clue-card {
+      margin-top: 22px;
+      padding: 17px;
+      border-left: 4px solid var(--pink);
+      background:
+        linear-gradient(90deg, rgba(207,52,121,.16), transparent),
+        #141414;
+    }
+
+    .clue-card h2 {
+      margin: 0 0 8px;
+      color: var(--pink-light);
+      font-family: "Oswald", sans-serif;
+      font-size: 15px;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .clue-card p {
+      margin: 0;
+      color: #cbc6c0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .progress-card {
+      margin-top: 17px;
+      padding: 14px 16px;
+      border: 1px solid #414141;
+      background: #111;
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 8px 0;
+      border-bottom: 1px solid #303030;
+      color: #8d8883;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .progress-row:last-child {
+      border-bottom: 0;
+    }
+
+    .progress-row strong {
+      color: white;
+    }
+
+    .phone {
+      width: min(485px, 100%);
+      min-height: 655px;
+      margin: auto;
+      padding: 20px;
+      border: 9px solid #252525;
+      border-radius: 37px;
+      background:
+        linear-gradient(160deg, rgba(118,84,216,.55), rgba(207,52,121,.52)),
+        #171717;
+      box-shadow:
+        17px 17px 0 rgba(0,0,0,.65),
+        21px 21px 0 rgba(207,52,121,.25);
+    }
+
+    .phone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 2px 13px;
+      border-bottom: 1px solid rgba(255,255,255,.22);
+    }
+
+    .phone-header p {
+      margin: 0;
+    }
+
+    .app-name {
+      font-family: "Oswald", sans-serif;
+      font-size: 24px;
+      text-transform: lowercase;
+    }
+
+    .turn-label {
+      color: #ffe1ee;
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .profile {
+      min-height: 450px;
+      margin-top: 15px;
+      overflow: hidden;
+      border-radius: 21px;
+      color: #121212;
+      background: #f3ede6;
+      box-shadow: 0 11px 27px rgba(0,0,0,.38);
+    }
+
+    .profile-photo {
+      height: 230px;
+      background:
+        radial-gradient(circle at 50% 32%, #e1ddd7 0 14%, transparent 14.5%),
+        radial-gradient(ellipse at 50% 90%, #282828 0 31%, transparent 31.5%),
+        linear-gradient(140deg, #797979, #272727);
+    }
+
+    .profile-data {
+      padding: 18px 20px 21px;
+    }
+
+    .profile-data h2 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      font-size: 34px;
+      text-transform: uppercase;
+    }
+
+    .profile-meta {
+      margin: 6px 0 13px;
+      color: #6b6661;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .profile-bio {
+      min-height: 58px;
+      margin: 0;
+      color: #292624;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 1.42;
+    }
+
+    .profile-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .profile-tag {
+      padding: 6px 9px;
+      border: 1px solid #aaa29a;
+      border-radius: 20px;
+      color: #48423e;
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .swipe-actions {
+      display: flex;
+      justify-content: center;
+      gap: 31px;
+      padding-top: 20px;
+    }
+
+    .swipe {
+      width: 67px;
+      height: 67px;
+      border: 2px solid;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 28px;
+    }
+
+    .reject {
+      color: var(--red);
+      border-color: var(--red);
+      background: #241115;
+    }
+
+    .like {
+      color: var(--green);
+      border-color: var(--green);
+      background: #102219;
+    }
+
+    .match-message {
+      min-height: 20px;
+      margin: 12px 0 0;
+      color: #ffe1ee;
+      font-size: 10px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    /* RESULTADO Y KUKITA */
+
+    .reveal-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 880px;
+      min-height: calc(100vh - 70px);
+      margin: auto;
+      text-align: center;
+    }
+
+    .big-heart {
+      display: block;
+      margin-bottom: 15px;
+      color: var(--pink);
+      font-size: 88px;
+      animation: heartbeat .8s infinite alternate;
+    }
+
+    @keyframes heartbeat {
+      to {
+        transform: scale(1.13);
+      }
+    }
+
+    .triangle {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 10px;
+      align-items: center;
+      margin: 14px 0;
+    }
+
+    .triangle-name {
+      padding: 14px 8px;
+      border: 1px solid var(--pink);
+      background: #171717;
+      font-family: "Oswald", sans-serif;
+      font-size: 21px;
+      text-transform: uppercase;
+    }
+
+    .triangle-heart {
+      color: var(--yellow);
+      font-size: 28px;
+    }
+
+    .kukita-frame {
+      width: min(900px, 100%);
+      margin: 22px auto 0;
+      overflow: hidden;
+      border: 3px solid #475569;
+      border-radius: 16px;
+      background: #090d16;
+      box-shadow:
+        12px 12px 0 rgba(0,0,0,.75),
+        15px 15px 0 rgba(207,52,121,.3);
+    }
+
+    .kukita-iframe {
+      display: block;
+      width: 100%;
+      height: 680px;
+      border: 0;
+      background: #090d16;
+    }
+
+    .kukita-navigation {
+      width: min(900px, 100%);
+      margin: 22px auto 0;
+      padding: 17px 19px;
+      border-left: 4px solid var(--pink);
+      background:
+        linear-gradient(90deg, rgba(207,52,121,.16), transparent),
+        #111;
+    }
+
+    .kukita-navigation p {
+      margin: 0;
+      color: #cbc6c0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 850px) {
+      .cover-content,
+      .shell {
+        padding: 28px 20px 34px;
+      }
+
+      .cover-art {
+        width: 100%;
+        opacity: .23;
+        mask-image: none;
+        -webkit-mask-image: none;
+      }
+
+      .cover-story,
+      .cover-mission {
+        width: 100%;
+      }
+
+      .game-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .objective {
+        width: 100%;
+      }
+
+      .touch-controls {
+        display: flex;
+      }
+
+      .match-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .kukita-iframe {
+        height: 720px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .cover-title {
+        font-size: 65px;
+      }
+
+      .title {
+        font-size: 51px;
+      }
+
+      .hud {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .timer-block {
+        display: none;
+      }
+
+      .instructions {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .woman-outline {
+        transform: translateX(-50%) scale(.86);
+      }
+
+      .coartada-feedback {
+        width: calc(100% - 140px);
+      }
+
+      .kukita-iframe {
+        height: 760px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <!-- PORTADA -->
+    <section class="view cover active" id="cover-view" aria-labelledby="cover-title">
+      <div class="cover-art">
+        <object data="./Historieta 1.jpg" type="image/jpeg" aria-label="Lucía y Marcia, las dos hermanas rubias protagonistas"></object>
+
+        <div class="character-labels">
+          <span class="character-label">Lucía</span>
+          <span class="character-label">Marcia</span>
+        </div>
+      </div>
+
+      <div class="cover-content">
+        <p class="tag" id="cover-tag">Expediente familiar · 01</p>
+        <h1 class="cover-title" id="cover-title">La grieta<br>de casa</h1>
+        <h2 class="cover-subtitle" id="cover-subtitle">Dos hermanas · Un reencuentro</h2>
+
+        <div class="cover-story">
+          <p id="cover-story-one">
+            Lucía y Marcia crecieron separadas desde que sus padres tomaron caminos diferentes. Los años pasaron y cada una construyó una manera distinta de entender el país.
+          </p>
+
+          <p id="cover-story-two">
+            <strong>Lucía</strong> se convirtió en una influencer de derecha. Sus seguidores no saben que <span class="secret">también estudia en la Facultad de Ciencias Sociales</span>: un dato que contradice el personaje que construyó en redes.
+          </p>
+
+          <p id="cover-story-three">
+            <strong>Marcia</strong> estudia en Sociales y milita en una agrupación peronista. Ahora sus padres volvieron a enamorarse y las hermanas deberán compartir una casa después de años separadas.
+          </p>
+
+          <p id="cover-story-four">
+            Antes del reencuentro familiar, sus caminos están por cruzarse en el lugar que Lucía más quiere mantener en secreto.
+          </p>
+        </div>
+
+        <aside class="cover-mission">
+          <p id="cover-mission-text">
+            Ayudá a Lucía a escapar de la mirada de Marcia. Tus acciones abrirán distintos recorridos, historietas y nuevas contradicciones.
+          </p>
+        </aside>
+
+        <button class="button" id="begin-button" type="button">
+          Comenzar el reencuentro
+        </button>
+      </div>
+    </section>
+
+    <!-- SIGILO -->
+    <section class="view" id="stealth-view" aria-labelledby="stealth-title">
+      <div class="shell">
+        <header class="topbar">
+          <p class="chapter" id="stealth-chapter">Capítulo 01 · El secreto</p>
+          <p class="brand" id="stealth-brand">La grieta de casa</p>
+        </header>
+
+        <div class="game-heading">
+          <div>
+            <p class="tag" id="stealth-location">Facultad de Ciencias Sociales · UBA</p>
+            <h1 class="title" id="stealth-title">Que no te vea</h1>
+          </div>
+
+          <p class="objective" id="stealth-objective">
+            Llegá al aula 204 antes de 20 segundos. Escondete detrás de las columnas y evitá permanecer dentro de la <strong>zona rosa</strong>.
+          </p>
+        </div>
+
+        <section class="hud" aria-label="Información del juego">
+          <div class="hud-block">
+            <span class="hud-label">Sospecha de Marcia</span>
+            <div class="meter-track" id="suspicion-track" role="progressbar" aria-label="Sospecha de Marcia" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="meter-fill" id="suspicion-fill"></div>
+            </div>
+          </div>
+
+          <div class="hud-block timer-block">
+            <span class="hud-label">Tiempo</span>
+            <strong class="timer" id="stealth-timer">00:20</strong>
+          </div>
+
+          <div class="hud-block right">
+            <span class="hud-label">Destino</span>
+            <strong class="counter"><span>Aula</span> 204</strong>
+          </div>
+        </section>
+
+        <div class="game-frame">
+          <canvas id="stealth-canvas" width="1100" height="540" aria-label="Juego de sigilo en Sociales">
+            Tu navegador no permite ejecutar este juego.
+          </canvas>
+
+          <section class="overlay visible" id="stealth-instructions" aria-labelledby="stealth-instructions-title">
+            <div class="overlay-card">
+              <p class="tag" id="stealth-instructions-tag">Juego rápido · 20 segundos</p>
+              <h2 class="overlay-title" id="stealth-instructions-title">Que Marcia no te vea</h2>
+
+              <p class="overlay-copy" id="stealth-instructions-copy">
+                Mové a Lucía con <strong>WASD o las flechas</strong>. Mantené Shift para correr. Si Marcia te descubre, se abre la Historieta 1. Si escapás, jugás Coartada Express y se abre la Historieta 2.
+              </p>
+
+              <ul class="instructions">
+                <li><span>🟡</span>Vos sos Lucía</li>
+                <li><span>🩷</span>Marcia patrulla</li>
+                <li><span>🚪</span>Llegá al aula</li>
+              </ul>
+
+              <div class="actions">
+                <button class="button" id="start-stealth-button" type="button">Comenzar</button>
+                <button class="button skip" id="skip-stealth-button" type="button">Skipear juego</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="overlay" id="stealth-result" aria-labelledby="stealth-result-title">
+            <div class="overlay-card">
+              <p class="tag" id="stealth-result-tag">Resultado</p>
+              <h2 class="overlay-title" id="stealth-result-title">Resultado</h2>
+              <p class="overlay-copy" id="stealth-result-copy">La ruta quedó definida.</p>
+
+              <div class="actions">
+                <button class="button" id="continue-route-button" type="button">Continuar</button>
+                <button class="button secondary" id="retry-stealth-button" type="button">Reintentar</button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="touch-controls" aria-label="Controles táctiles">
+          <div class="dpad">
+            <button class="control up" data-stealth-key="ArrowUp" type="button" aria-label="Subir">▲</button>
+            <button class="control left" data-stealth-key="ArrowLeft" type="button" aria-label="Izquierda">◀</button>
+            <button class="control down" data-stealth-key="ArrowDown" type="button" aria-label="Bajar">▼</button>
+            <button class="control right-control" data-stealth-key="ArrowRight" type="button" aria-label="Derecha">▶</button>
+          </div>
+
+          <button class="control run" data-stealth-key="Shift" type="button">Correr</button>
+        </div>
+
+        <div class="actions">
+          <button class="button skip small" id="skip-stealth-live-button" type="button">Skipear juego</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- COARTADA EXPRESS: SIN IMÁGENES -->
+    <section class="view coartada-view" id="coartada-view" aria-labelledby="coartada-title">
+      <div class="infinite-background" aria-hidden="true"></div>
+
+      <div class="shell">
+        <header class="topbar">
+          <p class="chapter" id="coartada-chapter">Ruta alternativa · Secreto a salvo</p>
+          <p class="brand" id="coartada-brand">La grieta de casa</p>
+        </header>
+
+        <div class="coartada-intro">
+          <p class="tag" id="coartada-tag">Juego 02A · 15 segundos</p>
+          <h1 class="title" id="coartada-title">Coartada Express</h1>
+
+          <p class="section-copy" id="coartada-intro-copy">
+            Lucía consiguió esconderse, pero Marcia sospecha haberla visto. Antes de responderle, eliminá de la escena las <strong>cuatro pistas</strong> que revelan que está en Sociales.
+          </p>
+
+          <div class="message-card">
+            <strong>Mensaje de Marcia</strong>
+            “¿Dónde estás? Me pareció verte en el pasillo de Sociales…”
+          </div>
+        </div>
+
+        <section class="coartada-stage" id="coartada-stage" aria-label="Escena de Lucía con pistas comprometedoras">
+          <div class="status-bar">
+            <span>Tiempo: <strong id="coartada-timer">00:15</strong></span>
+            <span>Pistas: <strong id="coartada-counter">0/4</strong></span>
+          </div>
+
+          <div class="woman-outline" aria-label="Contorno de Lucía, una mujer rubia">
+            <div class="hair-back"></div>
+            <div class="head-outline"></div>
+            <div class="hair-fringe"></div>
+            <div class="neck-outline"></div>
+            <div class="body-outline"></div>
+            <div class="phone-outline"></div>
+          </div>
+
+          <button class="clue-object clue-credential correct-clue" type="button" aria-label="Ocultar credencial de la UBA">🪪</button>
+          <button class="clue-object clue-books correct-clue" type="button" aria-label="Ocultar apuntes de Sociales">📚</button>
+          <button class="clue-object clue-sign correct-clue" type="button" aria-label="Ocultar cartel de la facultad">🏫</button>
+          <button class="clue-object clue-schedule correct-clue" type="button" aria-label="Ocultar horario de cursada">📅</button>
+
+          <button class="clue-object distractor-coffee distractor" type="button" aria-label="Café, no es una pista">☕</button>
+          <button class="clue-object distractor-headphones distractor" type="button" aria-label="Auriculares, no son una pista">🎧</button>
+
+          <p class="coartada-feedback" id="coartada-feedback">
+            Tocá “Preparar selfie” para comenzar.
+          </p>
+
+          <section class="overlay" id="coartada-result" aria-labelledby="coartada-result-title">
+            <div class="overlay-card">
+              <p class="tag" id="coartada-result-tag">Resultado</p>
+              <h2 class="overlay-title" id="coartada-result-title">Coartada enviada</h2>
+              <p class="overlay-copy" id="coartada-result-copy">El secreto sigue a salvo.</p>
+
+              <div class="actions">
+                <button class="button" id="open-comic-two-button" type="button">Ver Historieta 2</button>
+                <button class="button secondary" id="retry-coartada-button" type="button">Reintentar</button>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <div class="actions coartada-actions">
+          <button class="button" id="start-coartada-button" type="button">Preparar selfie</button>
+          <button class="button skip" id="skip-coartada-button" type="button">Skipear juego</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORIETA 1 -->
+    <section class="view" id="comic-one-view" aria-labelledby="comic-one-title">
+      <div class="shell">
+        <header class="topbar">
+          <p class="chapter" id="comic-one-chapter">Ruta 01 · Marcia encuentra a Lucía</p>
+          <p class="brand" id="comic-one-brand">La grieta de casa</p>
+        </header>
+
+        <p class="route-badge" id="comic-one-badge">Secreto descubierto</p>
+        <h1 class="title" id="comic-one-title">El secreto sale a la luz</h1>
+
+        <div class="comic-image-shell">
+          <object class="comic-image" data="./Historieta 1.jpg" type="image/jpeg" aria-label="Historieta en la que Marcia descubre a Lucía en Sociales"></object>
+        </div>
+
+        <div class="actions">
+          <button class="button comic-match-button" type="button">Jugar al match</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORIETA 2 -->
+    <section class="view" id="comic-two-view" aria-labelledby="comic-two-title">
+      <div class="shell">
+        <header class="topbar">
+          <p class="chapter" id="comic-two-chapter">Ruta 02 · Lucía consigue escapar</p>
+          <p class="brand" id="comic-two-brand">La grieta de casa</p>
+        </header>
+
+        <p class="route-badge" id="comic-two-badge">Secreto a salvo</p>
+        <h1 class="title" id="comic-two-title">Un encuentro que no ocurrió</h1>
+
+        <div class="comic-image-shell">
+          <object class="comic-image" data="./Historieta 2.jpg" type="image/jpeg" aria-label="Historieta alternativa en la que Lucía consigue esconderse"></object>
+        </div>
+
+        <div class="actions">
+          <button class="button comic-match-button" type="button">Jugar al match</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- JUEGO DEL MATCH -->
+    <section class="view" id="match-view" aria-labelledby="match-title">
+      <div class="shell">
+        <header class="topbar">
+          <p class="chapter" id="match-chapter">Capítulo 02 · Doble match</p>
+          <p class="brand" id="match-brand">La grieta de casa</p>
+        </header>
+
+        <div class="match-layout">
+          <section>
+            <p class="tag" id="match-tag">Juego rápido · 20 segundos</p>
+            <h1 class="title" id="match-title">Encontrá su match</h1>
+
+            <p class="section-copy" id="match-copy">
+              Primero elegís desde la cuenta de <strong>Marcia</strong> y después desde la cuenta secreta de <strong>Lucía</strong>.
+            </p>
+
+            <aside class="clue-card">
+              <h2 id="match-clue-title">Pista de Marcia</h2>
+              <p id="match-clue-copy">
+                Busca a una estudiante de la UBA que ama el cine argentino, los libros y los perros.
+              </p>
+            </aside>
+
+            <div class="progress-card">
+              <div class="progress-row">
+                <span>Tiempo</span>
+                <strong id="match-timer">00:20</strong>
+              </div>
+              <div class="progress-row">
+                <span>Turno</span>
+                <strong id="match-sister">Marcia</strong>
+              </div>
+              <div class="progress-row">
+                <span>Perfil</span>
+                <strong id="match-profile-counter">1 de 4</strong>
+              </div>
+              <div class="progress-row">
+                <span>Matches</span>
+                <strong id="match-found-counter">0 de 2</strong>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="button" id="start-match-button" type="button">Comenzar</button>
+              <button class="button skip" id="skip-match-button" type="button">Skipear juego</button>
+            </div>
+          </section>
+
+          <section class="phone" aria-label="Aplicación de citas Cruce">
+            <header class="phone-header">
+              <p class="app-name" id="match-app-name">cruce ♥</p>
+              <p class="turn-label" id="match-turn-label">Cuenta de Marcia</p>
+            </header>
+
+            <article class="profile" id="profile-card">
+              <div class="profile-photo" id="profile-photo"></div>
+
+              <div class="profile-data">
+                <h2 id="profile-name">Sofía, 24</h2>
+                <p class="profile-meta" id="profile-meta">Palermo · A 4 km</p>
+                <p class="profile-bio" id="profile-bio">Diseño y cafeterías.</p>
+                <div class="profile-tags" id="profile-tags"></div>
+              </div>
+            </article>
+
+            <div class="swipe-actions">
+              <button class="swipe reject" id="reject-profile-button" type="button" aria-label="Descartar perfil">✕</button>
+              <button class="swipe like" id="like-profile-button" type="button" aria-label="Elegir perfil">♥</button>
+            </div>
+
+            <p class="match-message" id="match-message">Presioná comenzar.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOBLE MATCH -->
+    <section class="view" id="double-match-view" aria-labelledby="double-match-title">
+      <div class="shell">
+        <div class="reveal-content">
+          <span class="big-heart" aria-hidden="true">♥</span>
+          <p class="tag" id="double-match-tag">Resultado · Doble match</p>
+          <h1 class="title" id="double-match-title">La misma persona</h1>
+
+          <p class="section-copy" id="double-match-copy">
+            Marcia eligió a Mechi. Después, desde su cuenta secreta, <strong>Lucía eligió exactamente el mismo perfil</strong>.
+          </p>
+
+          <div class="triangle">
+            <span class="triangle-name">Marcia</span>
+            <span class="triangle-heart">♥</span>
+            <span class="triangle-name">Mechi</span>
+          </div>
+
+          <div class="triangle">
+            <span class="triangle-name">Lucía</span>
+            <span class="triangle-heart">♥</span>
+            <span class="triangle-name">Mechi</span>
+          </div>
+
+          <p class="section-copy" id="double-match-consequence">
+            Antes de que las hermanas puedan hablar de lo ocurrido, <strong>Kukita sale corriendo por la puerta</strong>.
+          </p>
+
+          <button class="button" id="open-kukita-button" type="button">
+            Perseguir a Kukita
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KUKITA.HTML SIN MODIFICACIONES -->
+    <section class="view" id="kukita-view" aria-labelledby="kukita-title">
+      <div class="shell">
+        <header class="topbar">
+          <p class="chapter" id="kukita-chapter">Juego 03 · La gran fuga</p>
+          <p class="brand" id="kukita-brand">La grieta de casa</p>
+        </header>
+
+        <div class="game-heading">
+          <div>
+            <p class="tag" id="kukita-tag">Juego original</p>
+            <h1 class="title" id="kukita-title">Kukita: la gran fuga</h1>
+          </div>
+
+          <p class="objective" id="kukita-objective">
+            Seguí la fuga hasta llegar al lugar donde se encuentran <strong>Marcia y Mechi</strong>.
+          </p>
+        </div>
+
+        <div class="kukita-frame">
+          <iframe id="kukita-frame" class="kukita-iframe" src="./kukita.html" title="Kukita: La Gran Fuga Callejera" loading="eager" allow="autoplay"></iframe>
+        </div>
+
+        <div class="kukita-navigation">
+          <p id="kukita-navigation-copy">
+            Cuando termine la fuga, continuá para ver qué ocurre cuando las hermanas descubren que ambas hicieron match con Mechi.
+          </p>
+
+          <div class="actions">
+            <button class="button" id="finish-kukita-button" type="button">
+              Continuar la historia
+            </button>
+
+            <button class="button skip" id="skip-kukita-button" type="button">
+              Skipear juego
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORIETA 3: FINAL -->
+    <section class="view" id="comic-three-view" aria-labelledby="comic-three-title">
+      <div class="shell">
+        <header class="topbar">
+          <p class="chapter" id="comic-three-chapter">Final · La grieta se abre</p>
+          <p class="brand" id="comic-three-brand">La grieta de casa</p>
+        </header>
+
+        <p class="route-badge" id="comic-three-badge">Final del capítulo</p>
+        <h1 class="title" id="comic-three-title">La verdad sobre Mechi</h1>
+
+        <p class="section-copy" id="comic-three-copy">
+          Lucía recupera a Kukita y encuentra a Marcia con Mechi. El doble match queda expuesto. Las hermanas se sienten traicionadas y terminan peleadas.
+        </p>
+
+        <div class="comic-image-shell">
+          <object class="comic-image" data="./Historieta 3.jpg" type="image/jpeg" aria-label="Historieta final en la que Lucía y Marcia descubren que ambas hicieron match con Mechi y terminan peleadas"></object>
+        </div>
+
+        <div class="actions">
+          <button class="button" id="restart-button" type="button">Volver al inicio</button>
+          <button class="button secondary" id="replay-kukita-button" type="button">Repetir la fuga</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const views = {
+      cover: document.getElementById("cover-view"),
+      stealth: document.getElementById("stealth-view"),
+      coartada: document.getElementById("coartada-view"),
+      comicOne: document.getElementById("comic-one-view"),
+      comicTwo: document.getElementById("comic-two-view"),
+      match: document.getElementById("match-view"),
+      doubleMatch: document.getElementById("double-match-view"),
+      kukita: document.getElementById("kukita-view"),
+      comicThree: document.getElementById("comic-three-view")
+    };
+
+    let stealthRunning = false;
+    let coartadaRunning = false;
+    let matchRunning = false;
+    let routeResult = "hidden";
+
+    function showView(name) {
+      stealthRunning = false;
+      coartadaRunning = false;
+      matchRunning = false;
+
+      Object.values(views).forEach((view) => {
+        view.classList.remove("active");
+      });
+
+      views[name].classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    /* NAVEGACIÓN */
+
+    document.getElementById("begin-button").addEventListener("click", () => {
+      resetStealth();
+      document.getElementById("stealth-instructions").classList.add("visible");
+      document.getElementById("stealth-result").classList.remove("visible");
+      showView("stealth");
+    });
+
+    document.querySelectorAll(".comic-match-button").forEach((button) => {
+      button.addEventListener("click", openMatch);
+    });
+
+    document.getElementById("open-kukita-button").addEventListener("click", openKukita);
+
+    document.getElementById("finish-kukita-button").addEventListener("click", () => {
+      showView("comicThree");
+    });
+
+    document.getElementById("skip-kukita-button").addEventListener("click", () => {
+      showView("comicThree");
+    });
+
+    document.getElementById("replay-kukita-button").addEventListener("click", openKukita);
+
+    document.getElementById("restart-button").addEventListener("click", () => {
+      resetStealth();
+      resetCoartada();
+      resetMatch();
+      showView("cover");
+    });
+
+    function openKukita() {
+      document.getElementById("kukita-frame").src = "./kukita.html";
+      showView("kukita");
+    }
+
+    /* JUEGO DE SIGILO */
+
+    const stealthCanvas = document.getElementById("stealth-canvas");
+    const ctx = stealthCanvas.getContext("2d");
+    const keys = {};
+
+    let stealthTime = 20;
+    let lastFrame = 0;
+    let suspicion = 0;
+
+    const player = {
+      x: 70,
+      y: 465,
+      radius: 16,
+      speed: 175
+    };
+
+    const marcia = {
+      x: 580,
+      y: 110,
+      radius: 18,
+      patrol: 0,
+      direction: 1,
+      speed: 85,
+      angle: Math.PI * .6,
+      sight: 310,
+      cone: Math.PI / 3
+    };
+
+    const exit = {
+      x: 1005,
+      y: 425,
+      width: 66,
+      height: 80
+    };
+
+    const obstacles = [
+      { x: 0, y: 0, width: 1100, height: 35, type: "wall" },
+      { x: 0, y: 505, width: 1100, height: 35, type: "wall" },
+      { x: 0, y: 0, width: 30, height: 540, type: "wall" },
+      { x: 1070, y: 0, width: 30, height: 540, type: "wall" },
+      { x: 180, y: 70, width: 60, height: 175, type: "column" },
+      { x: 180, y: 340, width: 60, height: 125, type: "column" },
+      { x: 405, y: 175, width: 175, height: 55, type: "board" },
+      { x: 420, y: 360, width: 165, height: 58, type: "students" },
+      { x: 700, y: 230, width: 62, height: 185, type: "column" },
+      { x: 850, y: 90, width: 145, height: 55, type: "board" },
+      { x: 845, y: 350, width: 145, height: 55, type: "students" }
+    ];
+
+    function resetStealth() {
+      player.x = 70;
+      player.y = 465;
+      marcia.patrol = 0;
+      marcia.direction = 1;
+      suspicion = 0;
+      stealthTime = 20;
+      routeResult = "hidden";
+      updateStealthHud();
+      drawStealth();
+    }
+
+    function startStealth() {
+      resetStealth();
+      document.getElementById("stealth-instructions").classList.remove("visible");
+      document.getElementById("stealth-result").classList.remove("visible");
+      stealthRunning = true;
+      lastFrame = performance.now();
+      requestAnimationFrame(stealthLoop);
+    }
+
+    function skipStealth() {
+      stealthRunning = false;
+      routeResult = "hidden";
+      showStealthResult(
+        "Juego salteado",
+        "Lucía logra entrar al aula sin que Marcia pueda confirmar lo que vio."
+      );
+    }
+
+    function showStealthResult(title, copy) {
+      document.getElementById("stealth-result-title").textContent = title;
+      document.getElementById("stealth-result-copy").textContent = copy;
+      document.getElementById("stealth-result").classList.add("visible");
+    }
+
+    function finishStealth(found) {
+      stealthRunning = false;
+      routeResult = found ? "found" : "hidden";
+
+      showStealthResult(
+        found ? "¡Marcia te vio!" : "Escapaste",
+        found
+          ? "Marcia reconoce a Lucía en el pasillo. El secreto quedó descubierto."
+          : "Lucía entra al aula antes de ser reconocida. Su secreto sigue a salvo."
+      );
+    }
+
+    function updateStealthHud() {
+      const level = Math.max(0, Math.min(100, suspicion));
+      document.getElementById("suspicion-fill").style.width = level + "%";
+      document.getElementById("suspicion-track").setAttribute("aria-valuenow", Math.round(level));
+      document.getElementById("stealth-timer").textContent =
+        "00:" + String(Math.max(0, Math.ceil(stealthTime))).padStart(2, "0");
+    }
+
+    function circleHitsRect(x, y, radius, rectangle) {
+      const closestX = Math.max(rectangle.x, Math.min(x, rectangle.x + rectangle.width));
+      const closestY = Math.max(rectangle.y, Math.min(y, rectangle.y + rectangle.height));
+      const deltaX = x - closestX;
+      const deltaY = y - closestY;
+
+      return deltaX * deltaX + deltaY * deltaY < radius * radius;
+    }
+
+    function canMove(x, y) {
+      return !obstacles.some((obstacle) => {
+        return circleHitsRect(x, y, player.radius, obstacle);
+      });
+    }
+
+    function lineHitsRect(x1, y1, x2, y2, rectangle) {
+      for (let index = 0; index <= 45; index += 1) {
+        const ratio = index / 45;
+        const x = x1 + (x2 - x1) * ratio;
+        const y = y1 + (y2 - y1) * ratio;
+
+        if (
+          x >= rectangle.x &&
+          x <= rectangle.x + rectangle.width &&
+          y >= rectangle.y &&
+          y <= rectangle.y + rectangle.height
+        ) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    function isVisible() {
+      const deltaX = player.x - marcia.x;
+      const deltaY = player.y - marcia.y;
+      const distance = Math.hypot(deltaX, deltaY);
+
+      if (distance > marcia.sight) return false;
+
+      let difference = Math.atan2(deltaY, deltaX) - marcia.angle;
+
+      while (difference > Math.PI) difference -= Math.PI * 2;
+      while (difference < -Math.PI) difference += Math.PI * 2;
+
+      if (Math.abs(difference) > marcia.cone / 2) return false;
+
+      return !obstacles.some((obstacle) => {
+        return lineHitsRect(marcia.x, marcia.y, player.x, player.y, obstacle);
+      });
+    }
+
+    function updateStealth(delta) {
+      stealthTime -= delta;
+
+      if (stealthTime <= 0) {
+        stealthTime = 0;
+        updateStealthHud();
+        finishStealth(true);
+        return;
+      }
+
+      let horizontal = 0;
+      let vertical = 0;
+
+      if (keys.ArrowLeft || keys.a || keys.A) horizontal -= 1;
+      if (keys.ArrowRight || keys.d || keys.D) horizontal += 1;
+      if (keys.ArrowUp || keys.w || keys.W) vertical -= 1;
+      if (keys.ArrowDown || keys.s || keys.S) vertical += 1;
+
+      if (horizontal || vertical) {
+        const length = Math.hypot(horizontal, vertical);
+        horizontal /= length;
+        vertical /= length;
+      }
+
+      const movement = player.speed * (keys.Shift ? 1.55 : 1) * delta;
+      const nextX = player.x + horizontal * movement;
+      const nextY = player.y + vertical * movement;
+
+      if (canMove(nextX, player.y)) player.x = nextX;
+      if (canMove(player.x, nextY)) player.y = nextY;
+
+      marcia.patrol += marcia.speed * marcia.direction * delta;
+
+      if (marcia.patrol > 260) {
+        marcia.patrol = 260;
+        marcia.direction = -1;
+      }
+
+      if (marcia.patrol < 0) {
+        marcia.patrol = 0;
+        marcia.direction = 1;
+      }
+
+      marcia.x = 560 + marcia.patrol;
+      marcia.y = 105 + Math.sin(marcia.patrol / 45) * 35;
+      marcia.angle = marcia.direction > 0 ? Math.PI * .55 : Math.PI * .82;
+
+      suspicion += isVisible() ? 58 * delta : -20 * delta;
+      suspicion = Math.max(0, Math.min(100, suspicion));
+
+      if (suspicion >= 100) {
+        finishStealth(true);
+        return;
+      }
+
+      const reachedExit =
+        player.x > exit.x &&
+        player.x < exit.x + exit.width &&
+        player.y > exit.y &&
+        player.y < exit.y + exit.height;
+
+      if (reachedExit) {
+        finishStealth(false);
+        return;
+      }
+
+      updateStealthHud();
+    }
+
+    function drawPerson(person, label, color) {
+      ctx.save();
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(person.x, person.y, person.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = "#090909";
+      ctx.beginPath();
+      ctx.arc(person.x, person.y - 3, person.radius * .45, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "white";
+      ctx.font = "700 10px DM Mono";
+      ctx.textAlign = "center";
+      ctx.fillText(label, person.x, person.y + person.radius + 17);
+      ctx.restore();
+    }
+
+    function drawStealth() {
+      ctx.clearRect(0, 0, stealthCanvas.width, stealthCanvas.height);
+      ctx.fillStyle = "#202020";
+      ctx.fillRect(0, 0, stealthCanvas.width, stealthCanvas.height);
+
+      ctx.strokeStyle = "rgba(255,255,255,.055)";
+
+      for (let x = 30; x < stealthCanvas.width; x += 55) {
+        ctx.beginPath();
+        ctx.moveTo(x, 35);
+        ctx.lineTo(x, 505);
+        ctx.stroke();
+      }
+
+      for (let y = 35; y < stealthCanvas.height; y += 55) {
+        ctx.beginPath();
+        ctx.moveTo(30, y);
+        ctx.lineTo(1070, y);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = "#eee";
+      ctx.font = "700 14px DM Mono";
+      ctx.fillText("FACULTAD DE CIENCIAS SOCIALES", 50, 63);
+
+      ctx.beginPath();
+      ctx.moveTo(marcia.x, marcia.y);
+      ctx.arc(
+        marcia.x,
+        marcia.y,
+        marcia.sight,
+        marcia.angle - marcia.cone / 2,
+        marcia.angle + marcia.cone / 2
+      );
+      ctx.closePath();
+      ctx.fillStyle = isVisible()
+        ? "rgba(255,40,87,.38)"
+        : "rgba(207,52,121,.19)";
+      ctx.fill();
+
+      obstacles.forEach((obstacle) => {
+        if (obstacle.type === "wall") ctx.fillStyle = "#090909";
+        else if (obstacle.type === "column") ctx.fillStyle = "#5a5a5a";
+        else if (obstacle.type === "board") ctx.fillStyle = "#442833";
+        else ctx.fillStyle = "#353535";
+
+        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        ctx.strokeStyle = obstacle.type === "board" ? "#cf3479" : "#777";
+        ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+      });
+
+      ctx.fillStyle = "#173f31";
+      ctx.fillRect(exit.x, exit.y, exit.width, exit.height);
+      ctx.strokeStyle = "#6be7aa";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(exit.x, exit.y, exit.width, exit.height);
+
+      ctx.fillStyle = "#6be7aa";
+      ctx.font = "700 17px Oswald";
+      ctx.textAlign = "center";
+      ctx.fillText("AULA 204", exit.x + exit.width / 2, exit.y + 44);
+
+      drawPerson(player, "LUCÍA", "#e7e51f");
+      drawPerson(marcia, "MARCIA", "#cf3479");
+
+      if (isVisible() && stealthRunning) {
+        ctx.fillStyle = "#ff4b5e";
+        ctx.font = "700 27px Oswald";
+        ctx.fillText("¡SALÍ DE SU CAMPO DE VISIÓN!", stealthCanvas.width / 2, 28);
+      }
+
+      ctx.textAlign = "start";
+    }
+
+    function stealthLoop(now) {
+      if (!stealthRunning) {
+        drawStealth();
+        return;
+      }
+
+      const delta = Math.min((now - lastFrame) / 1000, .035);
+      lastFrame = now;
+      updateStealth(delta);
+      drawStealth();
+
+      if (stealthRunning) requestAnimationFrame(stealthLoop);
+    }
+
+    document.getElementById("start-stealth-button").addEventListener("click", startStealth);
+    document.getElementById("retry-stealth-button").addEventListener("click", startStealth);
+    document.getElementById("skip-stealth-button").addEventListener("click", skipStealth);
+    document.getElementById("skip-stealth-live-button").addEventListener("click", skipStealth);
+
+    document.getElementById("continue-route-button").addEventListener("click", () => {
+      document.getElementById("stealth-result").classList.remove("visible");
+
+      if (routeResult === "found") {
+        showView("comicOne");
+      } else {
+        resetCoartada();
+        showView("coartada");
+      }
+    });
+
+    document.querySelectorAll("[data-stealth-key]").forEach((button) => {
+      const key = button.dataset.stealthKey;
+
+      const press = (event) => {
+        event.preventDefault();
+        keys[key] = true;
+        button.classList.add("active");
+      };
+
+      const release = (event) => {
+        event.preventDefault();
+        keys[key] = false;
+        button.classList.remove("active");
+      };
+
+      button.addEventListener("pointerdown", press);
+      button.addEventListener("pointerup", release);
+      button.addEventListener("pointercancel", release);
+      button.addEventListener("pointerleave", release);
+    });
+
+    /* COARTADA */
+
+    let coartadaTime = 15;
+    let foundClues = 0;
+    let coartadaInterval = null;
+
+    const correctClues = document.querySelectorAll(".correct-clue");
+    const distractors = document.querySelectorAll(".distractor");
+
+    function resetCoartada() {
+      coartadaRunning = false;
+      coartadaTime = 15;
+      foundClues = 0;
+      clearInterval(coartadaInterval);
+
+      document.getElementById("coartada-timer").textContent = "00:15";
+      document.getElementById("coartada-counter").textContent = "0/4";
+      document.getElementById("coartada-feedback").textContent =
+        "Tocá “Preparar selfie” para comenzar.";
+      document.getElementById("coartada-result").classList.remove("visible");
+
+      correctClues.forEach((clue) => {
+        clue.classList.remove("removed");
+      });
+    }
+
+    function startCoartada() {
+      resetCoartada();
+      coartadaRunning = true;
+
+      document.getElementById("coartada-feedback").textContent =
+        "Ocultá las cuatro pistas sin tocar los distractores.";
+
+      coartadaInterval = setInterval(() => {
+        coartadaTime -= 1;
+
+        document.getElementById("coartada-timer").textContent =
+          "00:" + String(Math.max(0, coartadaTime)).padStart(2, "0");
+
+        if (coartadaTime <= 0) finishCoartada(false);
+      }, 1000);
+    }
+
+    function finishCoartada(success, skipped = false) {
+      coartadaRunning = false;
+      clearInterval(coartadaInterval);
+
+      const title = document.getElementById("coartada-result-title");
+      const copy = document.getElementById("coartada-result-copy");
+
+      if (skipped) {
+        title.textContent = "Lucía improvisa";
+        copy.innerHTML =
+          "Lucía decide no responder. Marcia no puede confirmar lo que vio.";
+      } else if (success) {
+        title.textContent = "Coartada enviada";
+        copy.innerHTML =
+          "Lucía eliminó todas las pistas. <strong>Su secreto sigue a salvo.</strong>";
+      } else {
+        title.textContent = "Una pista quedó";
+        copy.innerHTML =
+          "Marcia sospecha, pero todavía <strong>no puede demostrar nada</strong>.";
+      }
+
+      document.getElementById("coartada-result").classList.add("visible");
+    }
+
+    correctClues.forEach((clue) => {
+      clue.addEventListener("click", () => {
+        if (!coartadaRunning || clue.classList.contains("removed")) return;
+
+        clue.classList.add("removed");
+        foundClues += 1;
+
+        document.getElementById("coartada-counter").textContent =
+          foundClues + "/4";
+
+        document.getElementById("coartada-feedback").textContent =
+          "Pista ocultada · " + foundClues + " de 4";
+
+        if (foundClues === 4) finishCoartada(true);
+      });
+    });
+
+    distractors.forEach((distractor) => {
+      distractor.addEventListener("click", () => {
+        if (!coartadaRunning) return;
+
+        coartadaTime = Math.max(0, coartadaTime - 2);
+
+        document.getElementById("coartada-timer").textContent =
+          "00:" + String(coartadaTime).padStart(2, "0");
+
+        document.getElementById("coartada-feedback").textContent =
+          "Eso no delata a Lucía · Perdés 2 segundos.";
+
+        if (coartadaTime <= 0) finishCoartada(false);
+      });
+    });
+
+    document.getElementById("start-coartada-button").addEventListener("click", startCoartada);
+    document.getElementById("retry-coartada-button").addEventListener("click", startCoartada);
+    document.getElementById("skip-coartada-button").addEventListener("click", () => finishCoartada(false, true));
+    document.getElementById("open-comic-two-button").addEventListener("click", () => showView("comicTwo"));
+
+    /* MATCH */
+
+    const profiles = [
+      {
+        name: "Sofía, 24",
+        meta: "Palermo · A 4 km",
+        bio: "Diseñadora. Cafeterías y viajes.",
+        tags: ["Diseño", "Café", "Viajes"],
+        hue: 25,
+        correct: false
+      },
+      {
+        name: "Julieta, 25",
+        meta: "Almagro · A 2 km",
+        bio: "Gimnasio, recitales y cocina.",
+        tags: ["Gimnasio", "Música", "Cocina"],
+        hue: 75,
+        correct: false
+      },
+      {
+        name: "Mechi, 23",
+        meta: "Estudiante UBA · A 1 km",
+        bio: "Cine argentino, libros, mate y perros.",
+        tags: ["Sociales", "Cine", "Libros", "Perros"],
+        hue: 325,
+        correct: true
+      },
+      {
+        name: "Malena, 26",
+        meta: "Caballito · A 5 km",
+        bio: "Fotografía, plantas y ciudad.",
+        tags: ["Fotografía", "Plantas", "Ciudad"],
+        hue: 205,
+        correct: false
+      }
+    ];
+
+    const sisters = [
+      {
+        name: "Marcia",
+        account: "Cuenta de Marcia",
+        clue: "Busca a una estudiante de la UBA que ama el cine, los libros y los perros."
+      },
+      {
+        name: "Lucía",
+        account: "Cuenta secreta de Lucía",
+        clue: "Busca a la chica de Sociales que lleva libros y tiene una foto con un perro."
+      }
+    ];
+
+    let matchTime = 20;
+    let matchInterval = null;
+    let sisterIndex = 0;
+    let profileIndex = 0;
+    let matches = 0;
+
+    function openMatch() {
+      resetMatch();
+      showView("match");
+    }
+
+    function resetMatch() {
+      clearInterval(matchInterval);
+      matchRunning = false;
+      matchTime = 20;
+      sisterIndex = 0;
+      profileIndex = 0;
+      matches = 0;
+
+      document.getElementById("match-timer").textContent = "00:20";
+      document.getElementById("match-message").textContent = "Presioná comenzar.";
+      renderProfile();
+    }
+
+    function startMatch() {
+      resetMatch();
+      matchRunning = true;
+
+      document.getElementById("match-message").textContent =
+        "Compará el perfil con las pistas.";
+
+      matchInterval = setInterval(() => {
+        matchTime -= 1;
+
+        document.getElementById("match-timer").textContent =
+          "00:" + String(Math.max(0, matchTime)).padStart(2, "0");
+
+        if (matchTime <= 0) revealDoubleMatch();
+      }, 1000);
+    }
+
+    function renderProfile() {
+      const profile = profiles[profileIndex];
+      const sister = sisters[sisterIndex];
+
+      document.getElementById("match-sister").textContent = sister.name;
+      document.getElementById("match-turn-label").textContent = sister.account;
+      document.getElementById("match-clue-title").textContent =
+        "Pista de " + sister.name;
+      document.getElementById("match-clue-copy").textContent = sister.clue;
+      document.getElementById("match-profile-counter").textContent =
+        (profileIndex + 1) + " de " + profiles.length;
+      document.getElementById("match-found-counter").textContent =
+        matches + " de 2";
+      document.getElementById("profile-name").textContent = profile.name;
+      document.getElementById("profile-meta").textContent = profile.meta;
+      document.getElementById("profile-bio").textContent = profile.bio;
+
+      const tags = document.getElementById("profile-tags");
+      tags.innerHTML = "";
+
+      profile.tags.forEach((tag) => {
+        const item = document.createElement("span");
+        item.className = "profile-tag";
+        item.textContent = tag;
+        tags.appendChild(item);
+      });
+
+      document.getElementById("profile-photo").style.background =
+        "radial-gradient(circle at 50% 32%, #e1ddd7 0 14%, transparent 14.5%)," +
+        "radial-gradient(ellipse at 50% 90%, hsl(" + profile.hue + " 18% 20%) 0 31%, transparent 31.5%)," +
+        "linear-gradient(140deg, hsl(" + profile.hue + " 23% 52%), #272727)";
+    }
+
+    function rejectProfile() {
+      if (!matchRunning) return;
+
+      profileIndex = (profileIndex + 1) % profiles.length;
+      renderProfile();
+    }
+
+    function likeProfile() {
+      if (!matchRunning) return;
+
+      if (!profiles[profileIndex].correct) {
+        document.getElementById("match-message").textContent =
+          "No coincide con todas las pistas.";
+
+        profileIndex = (profileIndex + 1) % profiles.length;
+        renderProfile();
+        return;
+      }
+
+      matches += 1;
+      document.getElementById("match-found-counter").textContent =
+        matches + " de 2";
+
+      if (sisterIndex === 0) {
+        sisterIndex = 1;
+        profileIndex = 0;
+        renderProfile();
+
+        document.getElementById("match-message").textContent =
+          "Ahora jugás desde la cuenta secreta de Lucía.";
+      } else {
+        revealDoubleMatch();
+      }
+    }
+
+    function revealDoubleMatch() {
+      matchRunning = false;
+      clearInterval(matchInterval);
+      showView("doubleMatch");
+    }
+
+    document.getElementById("start-match-button").addEventListener("click", startMatch);
+    document.getElementById("skip-match-button").addEventListener("click", revealDoubleMatch);
+    document.getElementById("reject-profile-button").addEventListener("click", rejectProfile);
+    document.getElementById("like-profile-button").addEventListener("click", likeProfile);
+
+    /* TECLADO */
+
+    document.addEventListener("keydown", (event) => {
+      if (!stealthRunning) return;
+
+      const controlled = [
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+        "KeyW",
+        "KeyA",
+        "KeyS",
+        "KeyD",
+        "ShiftLeft",
+        "ShiftRight"
+      ];
+
+      if (controlled.includes(event.code)) event.preventDefault();
+
+      if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
+        keys.Shift = true;
+      } else {
+        keys[event.key] = true;
+      }
+    });
+
+    document.addEventListener("keyup", (event) => {
+      keys[event.key] = false;
+
+      if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
+        keys.Shift = false;
+      }
+    });
+
+    window.addEventListener("blur", () => {
+      Object.keys(keys).forEach((key) => {
+        keys[key] = false;
+      });
+    });
+
+    resetStealth();
+    resetCoartada();
+    resetMatch();
+  </script>
+
+</body></html>
